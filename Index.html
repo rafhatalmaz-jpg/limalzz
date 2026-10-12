@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>html,body{margin:0}</style>
+<title>limalz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Onest:wght@400;500;600&family=Unbounded:wght@300;500;700&display=swap">
+<style>
+/* layout: huge greeting alone on the first screen, then a row of three tactile objects (case, notepad, envelope), then one closing line in black type */
+:root {
+  --milk: #f4f3f0;
+  --paper: #fbfbf9;
+  --mist: #e3e2de;
+  --ash: #c6c5c1;
+  --smoke: #5a5955;
+  --ink: #0d0d0d;
+  --display: "Unbounded", "Onest", system-ui, sans-serif;
+  --body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --hand: "Caveat", "Segoe Script", "Bradley Hand", cursive;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--milk);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+#waves {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+/* hero */
+.hero {
+  min-height: 88vh;
+  min-height: 88svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 22px;
+  padding-block: 8vh;
+}
+.hero h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(54px, 15.5vw, 190px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+}
+.lead {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(17px, 2.4vw, 23px);
+  font-weight: 500;
+  color: var(--smoke);
+  text-wrap: balance;
+}
+.cue {
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* objects */
+.toys {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(36px, 6vw, 56px) 24px;
+  padding-block: 4vh 10vh;
+}
+@media (min-width: 1000px) {
+  .toys { grid-template-columns: repeat(3, 1fr); }
+}
+.toy { min-width: 0; }
+
+.wrap {
+  position: relative;
+  width: min(100%, 340px);
+  height: 290px;
+  margin-inline: auto;
+}
+.stage {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 28px;
+  -webkit-tap-highlight-color: transparent;
+}
+.stage:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.lift {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: transform 0.4s ease;
+}
+@media (hover: hover) {
+  .stage:hover .lift { transform: translateY(-5px); }
+}
+.art { position: absolute; display: block; }
+
+.cap {
+  margin: 8px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 12px;
+}
+.tag {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.hint {
+  font-size: 14px;
+  color: var(--smoke);
+}
+
+/* revealed links (hidden until the object is open) */
+.reveal {
+  position: absolute;
+  left: 50%;
+  z-index: 5;
+  color: var(--ink);
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.3s ease, transform 0.4s ease, visibility 0s 0.3s;
+}
+.toy.is-open .reveal {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 0.45s ease 0.5s, transform 0.55s ease 0.5s, visibility 0s 0.5s;
+}
+.reveal:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; border-radius: 6px; }/* ---------- AirPods case ---------- */
+.ap { width: 200px; height: 270px; margin-left: -100px; top: 10px; }
+.ap-lid {
+  position: absolute;
+  left: 0; top: 0;
+  width: 200px; height: 96px;
+  border-radius: 70px 70px 8px 8px;
+  background: linear-gradient(180deg, #ffffff 0%, #efeeeb 100%);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -3px 6px rgba(0, 0, 0, 0.06);
+  transform-origin: 50% 100%;
+  z-index: 3;
+  transition: transform 0.8s cubic-bezier(0.3, 1.25, 0.4, 1), background 0.4s ease, z-index 0s 0.45s;
+}
+.toy.is-open .ap-lid {
+  transform: perspective(520px) translateY(-6px) rotateX(58deg);
+  background: linear-gradient(180deg, #cfcecb 0%, #e6e5e2 100%);
+  z-index: 1;
+  transition: transform 0.8s cubic-bezier(0.3, 1.25, 0.4, 1), background 0.4s ease, z-index 0s 0.12s;
+}
+@media (hover: hover) {
+  .toy:not(.is-open) .stage:hover .ap-lid { transform: perspective(520px) rotateX(10deg); }
+}
+.ap-pods {
+  position: absolute;
+  left: 28px; right: 28px; top: 18px;
+  height: 78px;
+  overflow: hidden;
+  z-index: 2;
+}
+.pod {
+  position: absolute;
+  bottom: 0;
+  width: 40px; height: 92px;
+  transform-origin: 50% 100%;
+  transform: translateY(112%) rotate(var(--r));
+  transition: transform 0.45s ease;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.2));
+}
+.pod::before {
+  content: "";
+  position: absolute;
+  left: 13px; top: 30px;
+  width: 15px; height: 62px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f1f0ed, #ffffff 40%, #deddda);
+}
+.pod::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #e8e7e4);
+}
+.pod.l { left: 8px; --r: -9deg; }
+.pod.r { right: 8px; --r: 9deg; }
+.toy.is-open .pod {
+  transform: translateY(16px) rotate(var(--r));
+  transition: transform 0.75s cubic-bezier(0.25, 1.3, 0.4, 1) 0.2s;
+}
+.ap-body {
+  position: absolute;
+  left: 0; top: 94px;
+  width: 200px; height: 176px;
+  border-radius: 8px 8px 64px 64px;
+  background: linear-gradient(180deg, #fdfdfc 0%, #f0efec 60%, #e5e4e0 100%);
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.09), inset 0 -8px 14px rgba(0, 0, 0, 0.05), 0 28px 34px -18px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+}
+.ap-led {
+  position: absolute;
+  left: 50%; top: 22px;
+  width: 7px; height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--ash);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.toy.is-open .ap-led { background: var(--ink); box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
+.ap-link {
+  top: 168px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+.ap-link:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }/* ---------- Notepad ---------- */
+.np {
+  width: 180px; height: 240px;
+  margin-left: -90px;
+  top: 25px;
+  perspective: 1000px;
+  transition: transform 0.9s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+.toy.is-open .np { transform: translateX(80px); }
+.np-page {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px 12px 12px 3px;
+  background-color: var(--paper);
+  background-image: repeating-linear-gradient(180deg, transparent 0 29px, #d9d8d4 29px 30px);
+  background-position: 0 40px;
+  box-shadow: 0 22px 30px -16px rgba(0, 0, 0, 0.32), inset 8px 0 10px -8px rgba(0, 0, 0, 0.25);
+}
+.np-page::before {
+  content: "";
+  position: absolute;
+  left: 22px; top: 0; bottom: 0;
+  width: 1px;
+  background: #cfcdc9;
+}
+.np-cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform-style: preserve-3d;
+  transform: translateZ(1px);
+  transition: transform 0.95s cubic-bezier(0.45, 0.05, 0.2, 1);
+}
+.toy.is-open .np-cover { transform: translateZ(1px) rotateY(-152deg); }
+@media (hover: hover) {
+  .toy:not(.is-open) .stage:hover .np-cover { transform: translateZ(1px) rotateY(-14deg); }
+}
+.np-front, .np-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px 12px 12px 3px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.np-front {
+  background: linear-gradient(135deg, #b5b4b1, #8e8d8a);
+  box-shadow: inset 3px 0 0 rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.np-front em {
+  position: absolute;
+  left: 22px; top: 24px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
+}
+.np-band {
+  position: absolute;
+  right: 22px; top: 0; bottom: 0;
+  width: 10px;
+  background: #151515;
+}
+.np-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #d6d5d2, #bdbcb9);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.np-link {
+  left: calc(50% + 86px);
+  top: 58px;
+  width: 140px;
+  text-align: left;
+  font-family: var(--hand);
+  font-weight: 600;
+  color: #181818;
+}
+.np-big { display: block; font-size: 44px; line-height: 1; transform: rotate(-2deg); transform-origin: 0 50%; }
+.np-small { display: block; margin-top: 18px; font-size: 34px; line-height: 1; transform: rotate(-2deg); transform-origin: 0 50%; }
+.scribble { display: block; width: 130px; height: 10px; margin-top: 4px; }
+.np-link:hover .scribble path { stroke-width: 3; }/* ---------- Envelope ---------- */
+.env {
+  width: 240px; height: 160px;
+  margin-left: -120px;
+  top: 120px;
+  perspective: 900px;
+  filter: drop-shadow(0 16px 16px rgba(0, 0, 0, 0.14));
+}
+.env-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: #d8d7d3;
+}
+.env-letter {
+  position: absolute;
+  left: 16px; right: 16px; top: 10px;
+  height: 150px;
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.07);
+  z-index: 2;
+  transition: transform 0.5s ease;
+}
+.toy.is-open .env-letter {
+  transform: translateY(-96px);
+  transition: transform 0.85s cubic-bezier(0.3, 1.1, 0.4, 1) 0.35s;
+}
+.env-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f7f6f3, #e8e7e3);
+  clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
+}
+.env-flap {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 54%;
+  z-index: 4;
+  transform-origin: 50% 0;
+  background: linear-gradient(180deg, #efeeea, #e0dfdb);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0.1, 0.2, 1) 0.35s, background 0.3s ease 0.45s, z-index 0s 0.6s;
+}
+.toy.is-open .env-flap {
+  transform: rotateX(180deg);
+  background: #cbcac6;
+  z-index: 1;
+  transition: transform 0.6s cubic-bezier(0.4, 0.1, 0.2, 1), background 0.3s ease 0.15s, z-index 0s 0.25s;
+}
+@media (hover: hover) {
+  .toy:not(.is-open) .stage:hover .env-flap { transform: rotateX(26deg); transition-delay: 0s; }
+}
+.env-link {
+  top: 48px;
+  width: 200px;
+  text-align: center;
+}
+.tt-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+.tt-name {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+.env-link:hover .tt-name { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+
+/* ---------- Closing line ---------- */
+.outro { padding-block: 6vh 16vh; }
+.outro p {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(26px, 5.4vw, 60px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.outro a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.12em;
+}
+.outro a:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; transition-delay: 0s !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<canvas id="waves" aria-hidden="true"></canvas>
+
+<div class="page">
+  <header class="hero">
+    <h1>привет</h1>
+    <p class="lead">чекайте внизу, там все где я есть</p>
+    <svg class="cue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
+  </header>
+
+  <main class="toys">
+
+    <article class="toy" id="toy-tg">
+      <div class="wrap">
+        <button class="stage" type="button" aria-expanded="false" aria-label="Кейс от AirPods, открыть телеграм">
+          <span class="lift"><span class="art ap" aria-hidden="true">
+            <span class="ap-pods"><i class="pod l"></i><i class="pod r"></i></span>
+            <span class="ap-lid"></span>
+            <span class="ap-body"><b class="ap-led"></b></span>
+          </span></span>
+        </button>
+        <a class="reveal ap-link" href="https://t.me/limalz" target="_blank" rel="noopener">limalz</a>
+      </div>
+      <p class="cap"><span class="tag">тг</span><span class="hint">нажми</span></p>
+    </article><article class="toy" id="toy-tgk">
+      <div class="wrap">
+        <button class="stage" type="button" aria-expanded="false" aria-label="Серый блокнот, открыть телеграм канал">
+          <span class="lift"><span class="art np" aria-hidden="true">
+            <span class="np-page"></span>
+            <span class="np-cover">
+              <span class="np-front"><em>notes</em><i class="np-band"></i></span>
+              <span class="np-back"></span>
+            </span>
+          </span></span>
+        </button>
+        <a class="reveal np-link" href="https://t.me/almaznik7" target="_blank" rel="noopener">
+          <span class="np-big">almaznik</span>
+          <svg class="scribble" viewBox="0 0 130 10" aria-hidden="true"><path d="M2 6 C 28 1, 56 9, 86 4 S 120 5, 128 3" fill="none" stroke="#181818" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="np-small">тгк</span>
+        </a>
+      </div>
+      <p class="cap"><span class="tag">тгк</span><span class="hint">нажми</span></p>
+    </article>
+
+    <article class="toy" id="toy-tt">
+      <div class="wrap">
+        <button class="stage" type="button" aria-expanded="false" aria-label="Конверт, открыть тик ток">
+          <span class="lift"><span class="art env" aria-hidden="true">
+            <span class="env-back"></span>
+            <span class="env-letter"></span>
+            <span class="env-front"></span>
+            <span class="env-flap"></span>
+          </span></span>
+        </button>
+        <a class="reveal env-link" href="https://www.tiktok.com/@almwars" target="_blank" rel="noopener">
+          <span class="tt-tag">tiktok</span>
+          <span class="tt-name">almwars</span>
+        </a>
+      </div>
+      <p class="cap"><span class="tag">тик ток</span><span class="hint">нажми</span></p>
+    </article>
+
+  </main>
+
+  <footer class="outro">
+    <p>че если что <a href="https://t.me/limalz" target="_blank" rel="noopener">пиши</a>, все такое, если надо сайт и тд сделаю</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // open / close objects
+  var toys = document.querySelectorAll('.toy');
+  Array.prototype.forEach.call(toys, function (toy) {
+    var btn = toy.querySelector('.stage');
+    var hint = toy.querySelector('.hint');
+    btn.addEventListener('click', function () {
+      var open = toy.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      hint.textContent = open ? 'закрыть' : 'нажми';
+    });
+  });
+
+  // wavy background
+  var c = document.getElementById('waves');
+  var ctx = c.getContext('2d');
+  var w = 0, h = 0;
+  var layers = [
+    { y: 0.18, a: 0.050, f: 1.1, s: 0.00022, p: 0.0, c0: 'rgba(255,255,255,0.95)', c1: 'rgba(255,255,255,0)' },
+    { y: 0.30, a: 0.060, f: 1.5, s: -0.00017, p: 1.7, c0: 'rgba(200,199,195,0.55)', c1: 'rgba(224,223,219,0)' },
+    { y: 0.46, a: 0.070, f: 0.9, s: 0.00014, p: 3.1, c0: 'rgba(255,255,255,0.9)', c1: 'rgba(255,255,255,0)' },
+    { y: 0.60, a: 0.060, f: 1.7, s: -0.00024, p: 4.4, c0: 'rgba(172,171,168,0.45)', c1: 'rgba(214,213,209,0)' },
+    { y: 0.76, a: 0.050, f: 1.2, s: 0.00018, p: 2.2, c0: 'rgba(236,235,232,0.95)', c1: 'rgba(198,197,193,0.4)' }
+  ];
+
+  function size() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    c.width = Math.round(w * dpr);
+    c.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }function frame(t) {
+    var bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#f8f7f4');
+    bg.addColorStop(1, '#e8e7e3');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+    layers.forEach(function (l) {
+      var base = h * l.y;
+      var amp = h * l.a;
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      for (var x = 0; x <= w + 10; x += 10) {
+        var k = (x / w) * Math.PI * 2 * l.f;
+        var y = base + Math.sin(k + t * l.s + l.p) * amp + Math.sin(k * 2.1 - t * l.s * 1.4 + l.p) * amp * 0.35;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(w + 10, h);
+      ctx.closePath();
+      var g = ctx.createLinearGradient(0, base - amp, 0, base + h * 0.35);
+      g.addColorStop(0, l.c0);
+      g.addColorStop(1, l.c1);
+      ctx.fillStyle = g;
+      ctx.fill();
+    });
+  }
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  size();
+  if (reduce) {
+    frame(0);
+    window.addEventListener('resize', function () { size(); frame(0); });
+  } else {
+    window.addEventListener('resize', size);
+    var loop = function (t) {
+      if (!document.hidden) frame(t);
+      window.requestAnimationFrame(loop);
+    };
+    window.requestAnimationFrame(loop);
+  }
+})();
+</script>
+</body>
+</html>
